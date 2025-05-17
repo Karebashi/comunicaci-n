@@ -13,18 +13,12 @@
     </style>
 </head>
 <body>
-    <script>
-    // Transición suave solo si se viene de pre_index.html
-    if (window.location.hash === "#frompre") {
-        document.body.style.opacity = "0";
-        window.addEventListener('DOMContentLoaded', function() {
-            setTimeout(function() {
-                document.body.style.transition = "opacity 0.5s";
-                document.body.style.opacity = "1";
-            }, 50);
-        });
-    }
-    </script>
+    <!-- Pantalla de bienvenida (solo la primera vez) -->
+    <div id="welcomeScreen" style="position:fixed;z-index:9999;top:0;left:0;width:100vw;height:100vh;background:white;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+        <h2 class="mb-4">¡Bienvenido al Proyecto de Comunicación de Datos!</h2>
+        <img src="calcular.png" alt="Bienvenida" style="max-width:220px;" class="mb-4">
+        <button id="enterBtn" class="btn btn-primary btn-lg">Ingresar</button>
+    </div>
     <!-- Encabezado superior fijo alineado a la izquierda -->
     <header class="main-header d-flex align-items-center px-3 shadow-sm">
         <div class="d-flex align-items-center gap-3">
@@ -111,6 +105,26 @@
     <!-- Bootstrap JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+    // Pantalla de bienvenida: solo la primera vez
+    if (localStorage.getItem('welcomeShown')) {
+        document.getElementById('welcomeScreen').style.display = 'none';
+    } else {
+        document.body.style.overflow = 'hidden';
+        document.getElementById('welcomeScreen').style.display = 'flex';
+        document.getElementById('main-header')?.classList.add('d-none');
+        document.getElementById('sidebarMenu')?.classList.add('d-none');
+        document.querySelector('main')?.classList.add('d-none');
+    }
+    document.getElementById('enterBtn').onclick = function() {
+        localStorage.setItem('welcomeShown', '1');
+        document.getElementById('welcomeScreen').style.display = 'none';
+        document.body.style.overflow = '';
+        // Mostrar el contenido principal
+        document.querySelector('header')?.classList.remove('d-none');
+        document.getElementById('sidebarMenu')?.classList.remove('d-none');
+        document.querySelector('main')?.classList.remove('d-none');
+    };
+
     const sidebar = document.getElementById('sidebarMenu');
     const toggleBtn = document.getElementById('sidebarToggle');
     const closeBtn = document.getElementById('sidebarClose');
