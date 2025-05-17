@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Atenuación y Ganancia</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <!-- Ya no se usa <style> aquí, todo está en styles.css -->
+</head>
+<body>
+    <!-- Encabezado superior fijo alineado a la izquierda -->
+    <header class="main-header d-flex align-items-center px-3 shadow-sm">
+        <div class="d-flex align-items-center gap-3">
+            <button class="btn sidebar-toggle" id="sidebarToggle" aria-label="Abrir menú" type="button">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <span class="fw-bold fs-4 text-white">Atenuación y Ganancia</span>
+        </div>
+    </header>
+    <!-- Botón de información fijo en la esquina superior derecha -->
+    <button type="button" class="btn btn-link p-0 m-0 border-0 info-btn-fixed" data-bs-toggle="modal" data-bs-target="#infoModal" title="¿Cómo funciona?" style="box-shadow:none;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="#17a2b8" viewBox="0 0 16 16">
+            <circle cx="8" cy="8" r="8" fill="#e9f7fa"/>
+            <path d="M8 4.5a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm.93 2.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 .875-.252 1.02-.797l.088-.416c.066-.308.118-.438.288-.438.145 0 .176.105.145.262l-.088.416c-.194.897.105 1.319.808 1.319.545 0 .875-.252 1.02-.797l.738-3.468c.194-.897-.105-1.319-.808-1.319-.545 0-.875.252-1.02.797l-.088.416c-.066.308-.118.438-.288.438-.145 0-.176-.105-.145-.262l.088-.416c.194-.897-.105-1.319-.808-1.319z" fill="#17a2b8"/>
+        </svg>
+    </button>
+    <!-- Sidebar despegable -->
+    <nav id="sidebarMenu" class="sidebar-menu">
+        <div class="sidebar-header d-flex align-items-center px-3 py-2">
+            <span class="fw-bold fs-5">Módulos</span>
+            <button type="button" class="btn-close ms-auto" aria-label="Cerrar" id="sidebarClose"></button>
+        </div>
+        <ul class="list-unstyled sidebar-list">
+            <li><a class="sidebar-link" href="index.html">Inicio</a></li>
+            <li><a class="sidebar-link" href="aten_ganan.html">Atenuación y Ganancia</a></li>
+            <li><a class="sidebar-link" href="tiem_trans.html">Tiempo de Transmisión</a></li>
+            <li><a class="sidebar-link" href="calculadora.html">Calculadora de dBm/dB</a></li>
+            <li><a class="sidebar-link" href="enlace_radio.html">Enlace de Radio</a></li>
+            <li><a class="sidebar-link active" href="amp_mod.html">Amplitud Modulada</a></li>
+            <li><a class="sidebar-link" href="frec_mod.html">Frecuencia Modulada</a></li>
+            <li><a class="sidebar-link" href="mod_ask.html">Modulación ASK</a></li>
+            <li><a class="sidebar-link" href="mod_fsk.html">Modulación FSK</a></li>
+        </ul>
+    </nav>
+    <main class="container" style="margin-top:80px;max-width:1000px;">
+        <div class="card shadow-sm border-0">
+            <div class="card-body">
+                <h2 class="mb-4 text-center">Presupuesto de Potencia</h2>
+                <!-- Convertidor de Potencia primero -->
+                <div class="row mb-4 justify-content-center align-items-stretch">
+                    <div class="col-md-7">
+                        <div class="card card-body mb-3 h-100">
+                            <h5 class="mb-3 text-center">Convertidor de Potencia (dBm a dB)</h5>
+                            <form id="potenciaForm" class="row g-2 align-items-end">
+                                <div class="col-6">
+                                    <label for="valorDbm" class="form-label mb-1">Potencia (dBm)</label>
+                                    <input type="number" class="form-control" id="valorDbm" step="any" placeholder="Ej: 10">
+                                </div>
+                                <div class="col-6">
+                                    <label for="tipoDbm" class="form-label mb-1">Tipo</label>
+                                    <select class="form-select" id="tipoDbm">
+                                        <option value="entrada">Entrada</option>
+                                        <option value="salida">Salida</option>
+                                    </select>
+                                </div>
+                                <div class="col-12">
+                                    <button type="button" class="btn btn-primary w-100" id="agregarDbm">Agregar a línea de tiempo</button>
+                                </div>
+                            </form>
+                            <div id="ayudaDbm" class="form-text mt-2"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-5 d-flex flex-column justify-content-center align-items-center">
+                        <div class="drag-box-stack mb-0 mb-md-0 flex-row gap-3">
+                            <span class="drag-box atenuacion" draggable="true" id="dragAtenuacion">Atenuación</span>
+                            <span class="drag-box ganancia" draggable="true" id="dragGanancia">Ganancia</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Botones de atenuación y ganancia después -->
+                <div class="mb-3 d-flex justify-content-between align-items-center">
+                    <strong class="text-center w-100">Arrastra los recuadros a la línea de tiempo, ingresa los valores y observa la suma logarítmica total.</strong>
+                    <button class="btn btn-outline-danger btn-sm ms-2" id="clearTimeline" title="Limpiar línea de tiempo" data-bs-toggle="modal" data-bs-target="#confirmClearModal" style="flex-shrink:0;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5.5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6zm3 .5a.5.5 0 0 1 .5-.5.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6z"/>
+                            <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1 0-2h3.086a1 1 0 0 1 .707.293l.707.707h2.586l.707-.707A1 1 0 0 1 10.414 2H13.5a1 1 0 0 1 1 1zm-3.5 1V4H5v9a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4h-1.5z"/>
+                        </svg>
+                    </button>
+                </div>
+                <div id="timeline-container" class="position-relative mb-3">
+                    <div id="timeline" class="timeline-dropzone position-relative">
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <div id="resultadoSuma" class="alert alert-info d-none text-center"></div>
+                </div>
+                <hr>
+                <!-- Modal de información -->
+                <div class="modal fade" id="infoModal" tabindex="-1" aria-labelledby="infoModalLabel" aria-hidden="true">
+                  <div class="modal-dialog modal-dialog-centered modal-lg info-modal-margin">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="infoModalLabel">¿Cómo funciona?</h5>
+                        <button type="button" class="btn-close btn-close-red" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                      </div>
+                      <div class="modal-body">
+                        <div class="row">
+                          <div class="col-md-6 mb-3 mb-md-0">
+                            <div class="small text-secondary text-justify info-modal-justify">
+                                <strong>Guía de uso y fundamentos de ingeniería de sistemas</strong><br><br>
+                                <strong>¿Qué es el presupuesto de potencia?</strong><br>
+                                En ingeniería de sistemas de comunicaciones, el presupuesto de potencia es el cálculo que permite determinar la potencia disponible en diferentes puntos de una cadena de transmisión, considerando todas las ganancias y atenuaciones que afectan la señal desde la fuente hasta el destino.<br><br>
+                                <strong>¿Cómo usar esta herramienta?</strong>
+                                <ol class="mb-2">
+                                    <li>
+                                        <b>Agregar potencias absolutas:</b> Ingresa un valor en dBm (decibelios-milivatio) y selecciona si corresponde a la <b>entrada</b> (potencia inicial) o <b>salida</b> (potencia final esperada). Al agregarlo, se fija como referencia absoluta en la línea de tiempo.
+                                    </li>
+                                    <li>
+                                        <b>Agregar etapas de ganancia o atenuación:</b> Arrastra los recuadros verdes (<b>Ganancia</b>) o rojos (<b>Atenuación</b>) a la línea de tiempo. Ingresa el valor en dB correspondiente a cada etapa (por ejemplo, la ganancia de un amplificador o la atenuación de un cable).
+                                    </li>
+                                    <li>
+                                        <b>Visualiza el resultado:</b> El sistema suma algebraicamente todas las ganancias y atenuaciones (con su respectivo signo) y, si hay una potencia absoluta, calcula la potencia final en dBm. Si solo hay valores relativos, realiza la suma logarítmica de potencias.
+                                    </li>
+                                    <li>
+                                        <b>Elimina etapas:</b> Puedes quitar cualquier etapa individualmente o limpiar toda la línea de tiempo usando el icono de basura.
+                                    </li>
+                                </ol>
+                            </div>
+                          </div>
+                          <div class="col-md-6">
+                            <div class="small text-secondary text-justify info-modal-justify">
+                                <strong>¿Cómo funciona el cálculo?</strong><br>
+                                <ul>
+                                    <li>
+                                        <b>Potencias absolutas (dBm):</b> Se utiliza como referencia de entrada o salida. El sistema solo permite una referencia absoluta a la vez para mantener la coherencia del cálculo.
+                                    </li>
+                                    <li>
+                                        <b>Ganancias y atenuaciones (dB):</b> Cada etapa suma (ganancia) o resta (atenuación) su valor al presupuesto total. El cálculo es:<br>
+                                        <code>Potencia final (dBm) = Potencia inicial (dBm) + Σ(Ganancias y Atenuaciones en dB)</code>
+                                    </li>
+                                    <li>
+                                        <b>Suma logarítmica:</b> Si no hay referencia absoluta, los valores en dB se convierten a potencias lineales usando:<br>
+                                        <code>P = 10^(dB/10)</code><br>
+                                        Luego se suman todas las potencias lineales y el resultado se convierte de nuevo a dB:<br>
+                                        <code>dB<sub>total</sub> = 10·log₁₀(ΣP)</code>
+                                    </li>
+                                </ul>
+                                <strong>Ejemplo de ingeniería:</strong><br>
+                                Supón que tienes una señal de entrada de 0 dBm, un cable con atenuación de 3 dB, un amplificador con ganancia de 10 dB y una antena con atenuación de 2 dB. El cálculo será:<br>
+                                <code>0 dBm - 3 dB + 10 dB - 2 dB = 5 dBm</code><br>
+                                Es decir, la potencia final en el extremo será de 5 dBm.<br><br>
+                                <strong>Importancia en sistemas:</strong><br>
+                                El presupuesto de potencia es fundamental para garantizar que la señal llegue con suficiente nivel al receptor, evitando pérdidas excesivas o saturación de equipos. Es una herramienta esencial en el diseño, análisis y mantenimiento de enlaces de comunicaciones.<br>
+                                <br>
+                                <b>Nota:</b> Esta herramienta es didáctica y orientada a la comprensión de los conceptos de suma logarítmica y presupuesto de potencia en sistemas de comunicación.
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <!-- Modal de confirmación Bootstrap -->
+    <div class="modal fade" id="confirmClearModal" tabindex="-1" aria-labelledby="confirmClearModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="confirmClearModalLabel">Confirmar limpieza</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+          </div>
+          <div class="modal-body">
+            ¿Está seguro que desea eliminar toda la línea de tiempo? Esta acción no se puede deshacer.
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="button" class="btn btn-danger" id="confirmClearBtn">Eliminar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    // Menú lateral
+    const sidebar = document.getElementById('sidebarMenu');
+    const toggleBtn = document.getElementById('sidebarToggle');
+    const closeBtn = document.getElementById('sidebarClose');
+
+    toggleBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        sidebar.classList.toggle('sidebar-open');
+    });
+
+    closeBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        sidebar.classList.remove('sidebar-open');
+    });
+
+    document.addEventListener('mousedown', (e) => {
+        if (
+            sidebar.classList.contains('sidebar-open') &&
+            !sidebar.contains(e.target) &&
+            e.target !== toggleBtn
+        ) {
+            sidebar.classList.remove('sidebar-open');
+        }
+    });
+
+    // Drag & Drop Interactivo
+    const dragAtenuacion = document.getElementById('dragAtenuacion');
+    const dragGanancia = document.getElementById('dragGanancia');
+    const timeline = document.getElementById('timeline');
+    const resultadoSuma = document.getElementById('resultadoSuma');
+    const clearTimeline = document.getElementById('clearTimeline');
+    const confirmClearBtn = document.getElementById('confirmClearBtn');
+    const confirmClearModal = document.getElementById('confirmClearModal');
+
+    dragAtenuacion.addEventListener('dragstart', (e) => {
+        e.dataTransfer.setData('tipo', 'atenuacion');
+    });
+    dragGanancia.addEventListener('dragstart', (e) => {
+        e.dataTransfer.setData('tipo', 'ganancia');
+    });
+
+    timeline.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        timeline.classList.add('active');
+    });
+    timeline.addEventListener('dragleave', () => {
+        timeline.classList.remove('active');
+    });
+    timeline.addEventListener('drop', (e) => {
+        e.preventDefault();
+        timeline.classList.remove('active');
+        const tipo = e.dataTransfer.getData('tipo');
+        if (tipo === 'atenuacion' || tipo === 'ganancia') {
+            agregarItemTimeline(tipo);
+        }
+    });
+
+    function agregarItemTimeline(tipo) {
+        const item = document.createElement('div');
+        item.className = `timeline-item`;
+        item.innerHTML = `
+            <div class="drag-box ${tipo}" style="width:100px;height:48px;cursor:default;">${tipo === 'atenuacion' ? 'Atenuación' : 'Ganancia'}</div>
+            <div class="input-group input-group-sm mt-2">
+                <input type="number" class="form-control valor-db" placeholder="Valor (dB)" step="any" style="max-width:90px;">
+                <span class="input-group-text">dB</span>
+            </div>
+            <span class="timeline-label">${tipo === 'atenuacion' ? '- (resta)' : '+ (suma)'}</span>
+            <button class="btn btn-link text-danger remove-btn" title="Eliminar etapa">&times;</button>
+        `;
+        timeline.appendChild(item);
+
+        // Evento para eliminar el item
+        item.querySelector('.remove-btn').onclick = () => {
+            item.remove();
+            calcularSuma();
+        };
+        // Evento para recalcular al cambiar valor
+        item.querySelector('.valor-db').oninput = calcularSuma;
+        calcularSuma();
+    }
+
+    confirmClearBtn.addEventListener('click', () => {
+        timeline.innerHTML = '';
+        calcularSuma();
+        // Cierra el modal usando Bootstrap
+        const modal = bootstrap.Modal.getInstance(confirmClearModal);
+        modal.hide();
+    });
+
+    // Conversión y agregado de potencias de entrada/salida (dBm)
+    const agregarDbmBtn = document.getElementById('agregarDbm');
+    const valorDbmInput = document.getElementById('valorDbm');
+    const tipoDbmSelect = document.getElementById('tipoDbm');
+    const ayudaDbm = document.getElementById('ayudaDbm');
+
+    agregarDbmBtn.addEventListener('click', () => {
+        const valorDbm = parseFloat(valorDbmInput.value);
+        const tipo = tipoDbmSelect.value;
+        if (isNaN(valorDbm)) {
+            ayudaDbm.textContent = "Por favor ingresa un valor válido en dBm.";
+            return;
+        }
+        ayudaDbm.textContent = "";
+        // Si es entrada, se agrega como Ganancia (positivo); si es salida, como Atenuación (negativo)
+        if (tipo === "entrada") {
+            agregarItemTimelineDbm("ganancia", valorDbm, "Potencia de entrada (dBm)");
+        } else {
+            agregarItemTimelineDbm("atenuacion", valorDbm, "Potencia de salida (dBm)");
+        }
+        valorDbmInput.value = "";
+    });
+
+    function agregarItemTimelineDbm(tipo, valorDbm, label) {
+        const item = document.createElement('div');
+        item.className = `timeline-item`;
+        item.innerHTML = `
+        <div class="drag-box ${tipo} timeline-dbm-box" style="
+            width: 120px;
+            height: 48px;
+            cursor: default;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            white-space: normal;
+            line-height: 1.1;
+            text-align: center;
+            padding: 0 4px;
+            font-size: 1.02rem;
+            flex-shrink: 0;
+        ">
+            <span style="width:100%;word-break:break-word;">${label}</span>
+        </div>
+        <div class="input-group input-group-sm mt-2" style="width: 120px;">
+            <input type="number" class="form-control valor-db" value="${valorDbm}" readonly style="max-width:70px;text-align:center;">
+            <span class="input-group-text" style="min-width:38px;justify-content:center;">dBm</span>
+        </div>
+        <span class="timeline-label" style="margin-top:4px;">${tipo === 'atenuacion' ? '- (resta)' : '+ (suma)'}</span>
+        <button class="btn btn-link text-danger remove-btn" title="Eliminar etapa" style="margin-top:2px;">&times;</button>
+    `;
+        timeline.appendChild(item);
+
+        // Evento para eliminar el item
+        item.querySelector('.remove-btn').onclick = () => {
+            item.remove();
+            calcularSuma();
+        };
+        calcularSuma();
+    }
+
+    function calcularSuma() {
+        let potenciasLineales = [];
+        let hayValores = false;
+        let tieneDbm = false;
+        let potenciaDbm = null;
+        let sumaDb = 0;
+        let procedimiento = `<div class="mb-2 text-start"><strong>Procedimiento detallado:</strong><br>`;
+
+        let paso = 1;
+        timeline.querySelectorAll('.timeline-item').forEach(item => {
+            const input = item.querySelector('.valor-db');
+            let valor = parseFloat(input.value);
+            if (!isNaN(valor)) {
+                hayValores = true;
+                const isDbm = item.querySelector('.input-group-text') && item.querySelector('.input-group-text').textContent.trim() === "dBm";
+                if (isDbm) {
+                    // Solo se permite un valor absoluto de potencia (dBm) en la línea de tiempo
+                    if (!tieneDbm) {
+                        potenciaDbm = valor;
+                        procedimiento += `<b>Paso ${paso++}:</b> Se toma la potencia absoluta inicial: <b>${valor} dBm</b> como referencia.<br>`;
+                        tieneDbm = true;
+                    }
+                } else {
+                    // Si es atenuación, el valor es negativo; si es ganancia, positivo
+                    let tipoEtapa = "";
+                    if (item.querySelector('.drag-box').classList.contains('atenuacion')) {
+                        valor = -Math.abs(valor);
+                        tipoEtapa = "Atenuación";
+                    } else {
+                        valor = Math.abs(valor);
+                        tipoEtapa = "Ganancia";
+                    }
+                    sumaDb += valor;
+                    procedimiento += `<b>Paso ${paso++}:</b> Se agrega ${tipoEtapa.toLowerCase()} de <b>${Math.abs(valor)} dB</b> (${valor > 0 ? "+" : ""}${valor} dB).<br>`;
+                }
+            }
+        });
+
+        if (hayValores) {
+            let resultado = "";
+            if (tieneDbm) {
+                // Si hay potencia absoluta, suma algebraicamente los dB relativos
+                procedimiento += `<b>Paso ${paso++}:</b> Se suman todas las ganancias y atenuaciones: <b>${sumaDb >= 0 ? "+" : ""}${sumaDb} dB</b>.<br>`;
+                const resultadoDbm = potenciaDbm + sumaDb;
+                procedimiento += `<b>Paso ${paso++}:</b> Se calcula la potencia final:<br>`;
+                procedimiento += `<span class="ms-3">Potencia final = Potencia inicial + suma de ganancias/atenuaciones<br>`;
+                procedimiento += `Potencia final = <b>${potenciaDbm} dBm ${sumaDb >= 0 ? "+" : ""}${sumaDb} dB = ${resultadoDbm} dBm</b></span><br>`;
+                procedimiento += `</div>`;
+                resultado = `<strong>Potencia final:</strong> <span class="${resultadoDbm < 0 ? 'text-danger' : 'text-success'}">${resultadoDbm.toFixed(2)} dBm</span>${procedimiento}`;
+            } else {
+                // Si no hay potencia absoluta, realiza suma logarítmica como antes
+                procedimiento += `<b>Paso ${paso++}:</b> No hay referencia absoluta, se realiza suma logarítmica:<br>`;
+                timeline.querySelectorAll('.timeline-item').forEach((item, idx) => {
+                    const input = item.querySelector('.valor-db');
+                    let valor = parseFloat(input.value);
+                    if (!isNaN(valor)) {
+                        let tipoEtapa = "";
+                        if (item.querySelector('.drag-box').classList.contains('atenuacion')) {
+                            valor = -Math.abs(valor);
+                            tipoEtapa = "Atenuación";
+                        } else {
+                            valor = Math.abs(valor);
+                            tipoEtapa = "Ganancia";
+                        }
+                        const potenciaLineal = Math.pow(10, valor / 10);
+                        potenciasLineales.push(potenciaLineal);
+                        procedimiento += `<span class="ms-3">• ${tipoEtapa} de ${Math.abs(valor)} dB → Potencia lineal = 10^(${valor}/10) = ${potenciaLineal.toFixed(4)}</span><br>`;
+                    }
+                });
+                const sumaPotencias = potenciasLineales.reduce((a, b) => a + b, 0);
+                procedimiento += `<b>Paso ${paso++}:</b> Suma de potencias lineales: <b>${potenciasLineales.map((p, i) => `P${i+1}=${p.toFixed(4)}`).join(" + ")} = ${sumaPotencias.toFixed(4)}</b><br>`;
+                const resultadoDb = 10 * Math.log10(sumaPotencias);
+                procedimiento += `<b>Paso ${paso++}:</b> Conversión a dB:<br>`;
+                procedimiento += `<span class="ms-3">dB<sub>total</sub> = 10·log₁₀(${sumaPotencias.toFixed(4)}) = <b>${resultadoDb.toFixed(2)} dB</b></span><br>`;
+                procedimiento += `</div>`;
+                resultado = `<strong>Suma logarítmica total:</strong> <span class="${resultadoDb < 0 ? 'text-danger' : 'text-success'}">${resultadoDb.toFixed(2)} dB</span>${procedimiento}`;
+            }
+            resultadoSuma.innerHTML = resultado;
+            resultadoSuma.classList.remove('d-none');
+        } else {
+            resultadoSuma.classList.add('d-none');
+        }
+    }
+    </script>
+</body>
+</html>

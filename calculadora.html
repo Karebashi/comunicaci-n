@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Calculadora de dBm y dB</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Encabezado superior fijo -->
+    <header class="main-header d-flex align-items-center px-3 shadow-sm">
+        <div class="d-flex align-items-center gap-3">
+            <button class="btn sidebar-toggle" id="sidebarToggle" aria-label="Abrir menú" type="button">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <span class="fw-bold fs-4 text-white">Cálculo de dBm y dB</span>
+        </div>
+    </header>
+    <!-- Botón de información fijo en la esquina superior derecha -->
+    <button type="button" class="btn btn-link p-0 m-0 border-0 info-btn-fixed" data-bs-toggle="modal" data-bs-target="#infoModal" title="¿Cómo funciona?" style="box-shadow:none;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="#17a2b8" viewBox="0 0 16 16">
+            <circle cx="8" cy="8" r="8" fill="#e9f7fa"/>
+            <path d="M8 4.5a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm.93 2.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 .875-.252 1.02-.797l.088-.416c.066-.308.118-.438.288-.438.145 0 .176.105.145.262l-.088.416c-.194.897.105 1.319.808 1.319.545 0 .875-.252 1.02-.797l.738-3.468c.194-.897-.105-1.319-.808-1.319-.545 0-.875.252-1.02.797l-.088.416c-.066.308-.118.438-.288.438-.145 0-.176-.105-.145-.262l.088-.416c.194-.897-.105-1.319-.808-1.319z" fill="#17a2b8"/>
+        </svg>
+    </button>
+    <!-- Sidebar despegable -->
+    <nav id="sidebarMenu" class="sidebar-menu">
+        <div class="sidebar-header d-flex align-items-center px-3 py-2">
+            <span class="fw-bold fs-5">Módulos</span>
+            <button type="button" class="btn-close ms-auto" aria-label="Cerrar" id="sidebarClose"></button>
+        </div>
+        <ul class="list-unstyled sidebar-list">
+            <li><a class="sidebar-link" href="index.html">Inicio</a></li>
+            <li><a class="sidebar-link" href="aten_ganan.html">Atenuación y Ganancia</a></li>
+            <li><a class="sidebar-link" href="tiem_trans.html">Tiempo de Transmisión</a></li>
+            <li><a class="sidebar-link" href="calculadora.html">Calculadora de dBm/dB</a></li>
+            <li><a class="sidebar-link" href="enlace_radio.html">Enlace de Radio</a></li>
+            <li><a class="sidebar-link active" href="amp_mod.html">Amplitud Modulada</a></li>
+            <li><a class="sidebar-link" href="frec_mod.html">Frecuencia Modulada</a></li>
+            <li><a class="sidebar-link" href="mod_ask.html">Modulación ASK</a></li>
+            <li><a class="sidebar-link" href="mod_fsk.html">Modulación FSK</a></li>
+        </ul>
+    </nav>
+        <main class="container" style="margin-top:80px;max-width:600px;">
+        <div class="card shadow-sm border-0">
+            <div class="card-body">
+                <h2 class="mb-4 text-center">Principios de Presupuesto de Potencia</h2>
+                <div class="mb-3">
+                    <input type="text" id="pantalla" class="form-control form-control-lg text-end" value="" readonly>
+                </div>
+                <div class="grid-pad">
+                    <!-- Fila 1 -->
+                    <button class="modern-btn num-btn" data-num="7">7</button>
+                    <button class="modern-btn num-btn" data-num="8">8</button>
+                    <button class="modern-btn num-btn" data-num="9">9</button>
+                    <button class="modern-btn borrar" id="borrarBtn" title="Borrar">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24">
+                            <rect x="3" y="6" width="18" height="12" rx="3" fill="none" stroke="#dc3545" stroke-width="2"/>
+                            <path d="M9.5 9.5l5 5m0-5l-5 5" stroke="#dc3545" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </button>
+                    <button class="modern-btn borrar ac" id="acBtn" title="Borrar todo">AC</button>
+
+                    <!-- Fila 2 -->
+                    <button class="modern-btn num-btn" data-num="4">4</button>
+                    <button class="modern-btn num-btn" data-num="5">5</button>
+                    <button class="modern-btn num-btn" data-num="6">6</button>
+                    <button class="modern-btn op-btn" data-op="+">+</button>
+                    <button class="modern-btn op-btn" data-op="-">−</button>
+
+                    <!-- Fila 3 -->
+                    <button class="modern-btn num-btn" data-num="1">1</button>
+                    <button class="modern-btn num-btn" data-num="2">2</button>
+                    <button class="modern-btn num-btn" data-num="3">3</button>
+                    <button class="modern-btn op-btn" data-op="dB">dB</button>
+                    <button class="modern-btn op-btn" data-op="dBm">dBm</button>
+
+                    <!-- Fila 4 personalizada -->
+                    <button class="modern-btn num-btn btn-0" data-num="0">0</button>
+                    <button class="modern-btn num-btn btn-dot" data-num=".">.</button>
+                    <button class="modern-btn op-btn btn-eq" id="igualBtn">=</button>
+                </div>
+                <!-- Procedimiento paso a paso -->
+                <div id="procedimientoCalc" class="alert alert-info mt-4 d-none info-modal-justify" style="text-align: justify;"></div>
+            </div>
+        </div>
+    </main>
+    <!-- Modal de información -->
+    <div class="modal fade" id="infoModal" tabindex="-1" aria-labelledby="infoModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-lg info-modal-margin">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="infoModalLabel">¿Cómo funciona?</h5>
+            <button type="button" class="btn-close btn-close-red" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-md-6 mb-3 mb-md-0">
+                <div class="small text-secondary text-justify info-modal-justify">
+                    <strong>Guía de uso y fundamentos de ingeniería de sistemas</strong><br><br>
+                    <strong>¿Qué es dB y dBm?</strong><br>
+                    <b>dB</b> (decibelio) es una unidad relativa que expresa la relación entre dos potencias o niveles, utilizada para representar ganancias o pérdidas en sistemas de comunicación.<br>
+                    <b>dBm</b> es una unidad absoluta que indica el nivel de potencia en decibelios referidos a 1 miliwatt (mW), es decir, 0 dBm = 1 mW.<br><br>
+                    <strong>¿Qué hace esta calculadora?</strong><br>
+                    Permite realizar operaciones con niveles de potencia absoluta (<b>dBm</b>) y relaciones de ganancia/pérdida (<b>dB</b>) de forma correcta y didáctica, mostrando el procedimiento paso a paso.<br><br>
+                    <strong>¿Cómo usar esta herramienta?</strong>
+                    <ol class="mb-2">
+                        <li>
+                            <b>Ingresa los valores numéricos</b> utilizando los botones o el teclado.
+                        </li>
+                        <li>
+                            <b>Selecciona la unidad</b> (<b>dB</b> o <b>dBm</b>) después de cada número según corresponda.
+                        </li>
+                        <li>
+                            <b>Utiliza los operadores + y −</b> para sumar o restar valores.
+                        </li>
+                        <li>
+                            <b>Presiona "="</b> para ver el resultado y el procedimiento detallado.
+                        </li>
+                    </ol>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="small text-secondary text-justify info-modal-justify">
+                    <strong>¿Cómo funciona el cálculo?</strong><br>
+                    <ul>
+                        <li>Si sumas/restas <b>dB</b> a <b>dBm</b> (ejemplo: 2 dBm + 10 dB), la calculadora suma/resta directamente los valores y el resultado es en dBm.</li>
+                        <li>Si sumas/restas <b>dB</b> con <b>dB</b>, la operación es directa y el resultado es en dB.</li>
+                        <li>Si sumas/restas <b>dBm</b> con <b>dBm</b>, la calculadora convierte ambos valores a miliwatts (mW), realiza la suma/resta lineal y convierte el resultado de vuelta a dBm, mostrando el procedimiento.</li>
+                        <li>Si intentas sumar <b>dB + dBm</b> (en ese orden), la calculadora mostrará un error, ya que físicamente no es válido.</li>
+                    </ul>
+                    <strong>Ejemplo de ingeniería:</strong><br>
+                    Si sumas 0 dBm + 0 dBm:<br>
+                    <code>0 dBm = 1 mW</code><br>
+                    <code>0 dBm = 1 mW</code><br>
+                    <code>1 mW + 1 mW = 2 mW</code><br>
+                    <code>10 × log₁₀(2) ≈ 3 dBm</code><br>
+                    <br>
+                    <strong>Importancia en sistemas:</strong><br>
+                    Esta calculadora ayuda a comprender y aplicar correctamente los conceptos de suma/resta de potencias y ganancias en sistemas de comunicaciones y electrónica, evitando errores comunes al operar con escalas logarítmicas.<br>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    // --- Menú lateral (copiado de tiem_trans.html) ---
+    const sidebar = document.getElementById('sidebarMenu');
+    const toggleBtn = document.getElementById('sidebarToggle');
+    const closeBtn = document.getElementById('sidebarClose');
+    toggleBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        sidebar.classList.toggle('sidebar-open');
+    });
+    closeBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        sidebar.classList.remove('sidebar-open');
+    });
+    document.addEventListener('mousedown', (e) => {
+        if (
+            sidebar.classList.contains('sidebar-open') &&
+            !sidebar.contains(e.target) &&
+            e.target !== toggleBtn
+        ) {
+            sidebar.classList.remove('sidebar-open');
+        }
+    });
+
+    // --- Lógica de la calculadora dB/dBm ---
+    const pantalla = document.getElementById('pantalla');
+    let expresion = [];
+    let buffer = '';
+
+    // Actualiza la pantalla
+    function actualizarPantalla() {
+        pantalla.value = expresion.join(' ') + (buffer ? (expresion.length ? ' ' : '') + buffer : '');
+    }
+
+    // Maneja los números y el punto
+    document.querySelectorAll('.num-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const num = btn.getAttribute('data-num');
+            // Solo un punto decimal por número
+            if(num === '.' && buffer.includes('.')) return;
+            buffer += num;
+            actualizarPantalla();
+        });
+    });
+
+    // Maneja las operaciones + y -
+    document.querySelectorAll('.op-btn[data-op="+"], .op-btn[data-op="-"]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const op = btn.getAttribute('data-op');
+            // Permitir "-" como signo negativo al inicio o tras un operador
+            if(op === '-' && buffer === '' && (expresion.length === 0 || ['+', '-'].includes(expresion[expresion.length-1]))) {
+                buffer = '-';
+                actualizarPantalla();
+                return;
+            }
+            if(buffer) {
+                expresion.push(buffer);
+                buffer = '';
+            }
+            // Evita operadores seguidos
+            if(expresion.length === 0 || ['+', '-'].includes(expresion[expresion.length-1])) return;
+            expresion.push(op);
+            actualizarPantalla();
+        });
+    });
+
+    // Maneja dB y dBm
+    document.querySelectorAll('.op-btn[data-op="dB"], .op-btn[data-op="dBm"]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            if(buffer) {
+                expresion.push(buffer);
+                buffer = '';
+            }
+            // Solo permite dB/dBm después de un número
+            if(expresion.length === 0 || isNaN(Number(expresion[expresion.length-1]))) return;
+            expresion.push(btn.getAttribute('data-op'));
+            actualizarPantalla();
+        });
+    });
+
+    // Borrar último carácter
+    document.getElementById('borrarBtn').addEventListener('click', () => {
+        if(buffer) {
+            buffer = buffer.slice(0, -1);
+        } else if(expresion.length) {
+            let last = expresion.pop();
+            if(!isNaN(Number(last))) {
+                buffer = last.slice(0, -1);
+            }
+        }
+        actualizarPantalla();
+    });
+
+    // Borrar todo
+    document.getElementById('acBtn').addEventListener('click', () => {
+        expresion = [];
+        buffer = '';
+        actualizarPantalla();
+        mostrarProcedimiento(''); // Oculta el procedimiento al borrar todo
+    });
+
+    // Función para mostrar el procedimiento paso a paso
+    function mostrarProcedimiento(procedimiento) {
+        const div = document.getElementById('procedimientoCalc');
+        if (procedimiento) {
+            div.innerHTML = procedimiento;
+            div.classList.remove('d-none');
+        } else {
+            div.classList.add('d-none');
+            div.innerHTML = '';
+        }
+    }
+
+    // Calcular resultado
+    document.getElementById('igualBtn').addEventListener('click', () => {
+        if(buffer) {
+            expresion.push(buffer);
+            buffer = '';
+        }
+        // Procesa la expresión: [num, dB|dBm, +|-, num, dB|dBm, ...]
+        let stack = [];
+        let i = 0;
+        let procedimiento = `<div class="text-start"><strong>Procedimiento detallado:</strong><br>`;
+        while(i < expresion.length) {
+            let num = parseFloat(expresion[i]);
+            let tipo = (i+1 < expresion.length && (expresion[i+1] === 'dB' || expresion[i+1] === 'dBm')) ? expresion[i+1] : null;
+            if(tipo) i++;
+            stack.push({valor: num, tipo: tipo});
+            i++;
+            if(i < expresion.length && (expresion[i] === '+' || expresion[i] === '-')) {
+                stack.push(expresion[i]);
+                i++;
+            }
+        }
+
+        // Validación de operaciones físicas válidas
+        let esValido = true;
+        let errorMsg = '';
+        if (stack.length >= 3) {
+            for (let j = 0; j < stack.length; j += 2) {
+                if (typeof stack[j] === 'object' && typeof stack[j+2] === 'object' && stack[j+1]) {
+                    let a = stack[j], b = stack[j+2];
+                    // Caso inválido: dB (+/- dBm)
+                    if (a.tipo === 'dB' && b.tipo === 'dBm') {
+                        esValido = false;
+                        errorMsg = `Error: La operación <b>dB + dBm</b> no es válida.<br><br>
+                            Solo se pueden sumar/restar:<br>
+                            - <b>dB a dB</b> (para combinar ganancias/pérdidas relativas)<br>
+                            - <b>dB a un valor en dBm</b> (La forma correcta es: <b>dBm + dB</b> o <b>dBm - dB</b>)<br>
+                            - <b>dBm a dBm</b> (Esta operación tiene usos específicos, como calcular diferencias de nivel, no para sumar potencias lineales)`;
+                        break;
+                    }
+                }
+            }
+        }
+        if (stack.length >= 1 && stack[0].tipo === 'dB' && stack.length > 2 && stack[2].tipo === 'dBm') {
+            esValido = false;
+            errorMsg = `Error: La operación <b>dB + dBm</b> no es válida.<br><br>
+Solo se pueden sumar/restar:<br>
+- <b>dB a dB</b> (para combinar ganancias/pérdidas relativas)<br>
+- <b>dB a un valor en dBm</b> (La forma correcta es: <b>dBm + dB</b> o <b>dBm - dB</b>)<br>
+- <b>dBm a dBm</b> (Esta operación tiene usos específicos, como calcular diferencias de nivel, no para sumar potencias lineales)`;
+        }
+        if (stack.length === 2 && stack[0].tipo === 'dB' && stack[1].tipo === 'dBm') {
+            esValido = false;
+            errorMsg = `Error: La operación <b>dB + dBm</b> no es válida.<br><br>
+Solo se pueden sumar/restar:<br>
+- <b>dB a dB</b> (para combinar ganancias/pérdidas relativas)<br>
+- <b>dB a un valor en dBm</b> (La forma correcta es: <b>dBm + dB</b> o <b>dBm - dB</b>)<br>
+- <b>dBm a dBm</b> (Esta operación tiene usos específicos, como calcular diferencias de nivel, no para sumar potencias lineales)`;
+        }
+        if (stack.length === 3 && stack[0].tipo === 'dB' && stack[2].tipo === 'dBm') {
+            esValido = false;
+            errorMsg = `Error: La operación <b>dB + dBm</b> no es válida.<br><br>
+Solo se pueden sumar/restar:<br>
+- <b>dB a dB</b> (para combinar ganancias/pérdidas relativas)<br>
+- <b>dB a un valor en dBm</b> (La forma correcta es: <b>dBm + dB</b> o <b>dBm - dB</b>)<br>
+- <b>dBm a dBm</b> (Esta operación tiene usos específicos, como calcular diferencias de nivel, no para sumar potencias lineales)`;
+        }
+
+        if (!esValido) {
+            pantalla.value = 'Error';
+            mostrarProcedimiento(`<div class="alert alert-danger mt-4 info-modal-justify" style="text-align: justify;">
+                <b>${errorMsg}</b>
+            </div>`);
+            expresion = [];
+            buffer = '';
+            return;
+        }
+
+        // Calcula el resultado permitiendo suma/resta de dB a dBm
+        let resultado = null;
+        let tipoActual = null;
+        let sumaLineal = false;
+        for(let j=0; j<stack.length; j++) {
+            if(typeof stack[j] === 'object') {
+                if(resultado === null) {
+                    resultado = stack[j].valor;
+                    tipoActual = stack[j].tipo;
+                    procedimiento += `<b>Paso 1:</b> Tomar el primer valor: <b>${resultado}${tipoActual ? ' ' + tipoActual : ''}</b><br>`;
+                } else {
+                    let op = stack[j-1];
+                    let siguiente = stack[j];
+                    let anterior = {valor: resultado, tipo: tipoActual};
+                    // Suma/resta de dBm a dBm: hacer suma/resta en escala lineal (mW)
+                    if(tipoActual === 'dBm' && siguiente.tipo === 'dBm') {
+                        // Conversión a mW
+                        let mW1 = Math.pow(10, resultado / 10);
+                        let mW2 = Math.pow(10, siguiente.valor / 10);
+                        let mWres;
+                        if(op === '+') {
+                            mWres = mW1 + mW2;
+                        } else {
+                            mWres = mW1 - mW2;
+                        }
+                        procedimiento += `<b>Paso ${Math.floor(j/2)+1}:</b> Sumar/restar en escala lineal:<br>`;
+                        procedimiento += `&nbsp;&nbsp;${anterior.valor} dBm = ${mW1.toFixed(6)} mW<br>`;
+                        procedimiento += `&nbsp;&nbsp;${siguiente.valor} dBm = ${mW2.toFixed(6)} mW<br>`;
+                        procedimiento += `&nbsp;&nbsp;${mW1.toFixed(6)} mW ${op} ${mW2.toFixed(6)} mW = ${mWres.toFixed(6)} mW<br>`;
+                        if(op === '-' && mWres <= 0) {
+                            pantalla.value = 'Error';
+                            mostrarProcedimiento(`<div class="alert alert-danger mt-4 info-modal-justify" style="text-align: justify;">
+                                <b>Error:</b> El resultado de la resta lineal es negativo o cero, lo cual no es físico.<br>
+                                Recuerda: Solo puedes restar dBm si el primer valor es mayor en mW que el segundo.<br>
+                                Para sumar dos señales, usa el operador <b>+</b>.
+                            </div>`);
+                            expresion = [];
+                            buffer = '';
+                            return;
+                        }
+                        if(op === '+' && mWres <= 0) {
+                            pantalla.value = 'Error';
+                            mostrarProcedimiento(`<div class="alert alert-danger mt-4 info-modal-justify" style="text-align: justify;">
+                                <b>Error:</b> El resultado de la suma lineal es negativo o cero, lo cual no es físico.<br>
+                                Revisa los valores ingresados.
+                            </div>`);
+                            expresion = [];
+                            buffer = '';
+                            return;
+                        }
+                        resultado = 10 * Math.log10(mWres);
+                        tipoActual = 'dBm';
+                        procedimiento += `&nbsp;&nbsp;10 × log₁₀(${mWres.toFixed(6)} mW / 1 mW) = <b>${resultado.toFixed(3)} dBm</b><br>`;
+                        sumaLineal = true;
+                    }
+                    // Si uno es dBm y otro es dB, resultado es dBm (suma directa)
+                    else if((tipoActual === 'dBm' && siguiente.tipo === 'dB') || (tipoActual === 'dB' && siguiente.tipo === 'dBm')) {
+                        procedimiento += `<b>Paso ${Math.floor(j/2)+1}:</b> ${anterior.valor} ${anterior.tipo || ''} ${op} ${siguiente.valor} ${siguiente.tipo || ''} = `;
+                        tipoActual = 'dBm';
+                        if(op === '+') resultado += siguiente.valor;
+                        if(op === '-') resultado -= siguiente.valor;
+                        procedimiento += `<b>${resultado} ${tipoActual || ''}</b><br>`;
+                    }
+                    // dB con dB (suma directa)
+                    else if(tipoActual === 'dB' && siguiente.tipo === 'dB') {
+                        procedimiento += `<b>Paso ${Math.floor(j/2)+1}:</b> ${anterior.valor} dB ${op} ${siguiente.valor} dB = `;
+                        if(op === '+') resultado += siguiente.valor;
+                        if(op === '-') resultado -= siguiente.valor;
+                        procedimiento += `<b>${resultado} dB</b><br>`;
+                        tipoActual = 'dB';
+                    }
+                    // Caso inválido
+                    else {
+                        pantalla.value = 'Error';
+                        mostrarProcedimiento(`<div class="alert alert-danger mt-4 info-modal-justify" style="text-align: justify;">
+                            <b>Error:</b> Solo se permite mezclar dBm y dB.
+                        </div>`);
+                        expresion = [];
+                        buffer = '';
+                        return;
+                    }
+                }
+            }
+        }
+        procedimiento += `<b>Resultado final:</b> <span class="text-success">${resultado !== null ? resultado.toFixed(3) : ''}${tipoActual ? ' ' + tipoActual : ''}</span></div>`;
+        if(resultado !== null) {
+            pantalla.value = resultado.toFixed(3) + (tipoActual ? ' ' + tipoActual : '');
+            expresion = [resultado.toFixed(3), tipoActual].filter(Boolean);
+            buffer = '';
+            mostrarProcedimiento(procedimiento);
+        } else {
+            mostrarProcedimiento('');
+        }
+    });
+
+    // Inicializa pantalla
+    actualizarPantalla();
+
+    // --- Manejo de teclado físico ---
+    document.addEventListener('keydown', function(e) {
+        // Si está enfocado en un input que no sea la pantalla, no hacer nada
+        if (document.activeElement && document.activeElement.tagName === 'INPUT' && document.activeElement.id !== 'pantalla') return;
+
+        // Números
+        if (/^[0-9]$/.test(e.key)) {
+            document.querySelector(`.num-btn[data-num="${e.key}"]`)?.click();
+            e.preventDefault();
+        }
+        // Punto decimal
+        if (e.key === '.' || e.key === ',') {
+            document.querySelector('.num-btn[data-num="."]')?.click();
+            e.preventDefault();
+        }
+        // Operadores
+        if (e.key === '+') {
+            document.querySelector('.op-btn[data-op="+"]')?.click();
+            e.preventDefault();
+        }
+        if (e.key === '-') {
+            document.querySelector('.op-btn[data-op="-"]')?.click();
+            e.preventDefault();
+        }
+        // Enter o igual
+        if (e.key === 'Enter' || e.key === '=') {
+            document.getElementById('igualBtn')?.click();
+            e.preventDefault();
+        }
+        // Backspace para borrar
+        if (e.key === 'Backspace') {
+            document.getElementById('borrarBtn')?.click();
+            e.preventDefault();
+        }
+        // Escape o Delete para borrar todo
+        if (e.key === 'Escape' || e.key === 'Delete') {
+            document.getElementById('acBtn')?.click();
+            e.preventDefault();
+        }
+        // d para dB, m para dBm
+        if (e.key.toLowerCase() === 'd') {
+            document.querySelector('.op-btn[data-op="dB"]')?.click();
+            e.preventDefault();
+        }
+        if (e.key.toLowerCase() === 'm') {
+            document.querySelector('.op-btn[data-op="dBm"]')?.click();
+            e.preventDefault();
+        }
+    });
+    </script>
+</body>
+</html>

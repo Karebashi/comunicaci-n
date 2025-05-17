@@ -1,0 +1,493 @@
+body {
+    padding-top: 0;
+    background: #f4f8fb;
+}
+
+.navbar,
+.custom-navbar {
+    background-color: #1E90FF !important;
+    border-radius: 0;
+    margin: 0;
+    min-height: 48px;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    width: 100vw;
+    left: 0;
+    top: 0;
+}
+
+.navbar-brand {
+    font-size: 1.3rem;
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
+.nav-link.bg-light,
+.nav-link.dropdown-toggle.bg-light {
+    font-size: 1rem;
+    border-radius: 2em !important;
+    margin-top: 2px;
+    margin-bottom: 2px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    padding: 0.35rem 1.2rem !important;
+    height: 2.2rem;
+    display: flex;
+    align-items: center;
+}
+
+.nav-link.bg-light:hover,
+.nav-link.bg-light.active,
+.nav-link.dropdown-toggle.bg-light:hover {
+    background-color: #0d6efd !important;
+    color: #fff !important;
+    transition: background 0.2s, color 0.2s;
+}
+
+.dropdown-menu {
+    font-size: 1.08rem;
+    min-width: 260px;
+    padding: 0.5rem 0;
+    left: 0 !important;
+    right: auto !important;
+    transform: none !important;
+    top: 100% !important;
+}
+
+.dropdown-item {
+    padding-top: 0.65rem;
+    padding-bottom: 0.65rem;
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+    font-size: 1.07rem;
+}
+
+/* Oculta la navbar superior previa si existe */
+/* .navbar, .custom-navbar { display: none !important; } */
+
+/* Botón hamburguesa */
+.sidebar-toggle {
+    position: fixed;
+    top: 16px;
+    left: 16px;
+    z-index: 1051;
+    background-color: transparent !important;
+    color: #fff !important;
+    border: none;
+    box-shadow: none;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Sidebar */
+.sidebar-menu {
+    position: fixed;
+    top: 56px;
+    left: 0;
+    width: 260px;
+    height: 100%;
+    background: #f8f9fa;
+    box-shadow: 2px 0 8px rgba(0,0,0,0.04);
+    transform: translateX(-100%);
+    transition: transform 0.2s;
+    z-index: 1045;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-menu.sidebar-open {
+    transform: translateX(0);
+}
+
+.sidebar-header {
+    border-bottom: 1px solid #dee2e6;
+}
+
+.sidebar-list {
+    padding: 0 0.5rem;
+}
+
+.sidebar-link {
+    display: block;
+    padding: 0.5rem 1rem;
+    color: #0d6efd;
+    text-decoration: none;
+    border-radius: 4px;
+    margin-bottom: 2px;
+    transition: background 0.18s, color 0.18s;
+}
+
+.sidebar-link:hover,
+.sidebar-link:focus {
+    background: #e9ecef;
+    color: #0a58ca;
+}
+
+.btn-close {
+    filter: invert(1);
+    opacity: 0.8;
+}
+
+@media (max-width: 991.98px) {
+    .navbar,
+    .custom-navbar {
+        margin: 0;
+        border-radius: 0;
+    }
+    body {
+        padding-top: 56px;
+    }
+}
+
+@media (max-width: 400px) {
+    .sidebar-menu {
+        width: 90vw;
+        min-width: 0;
+    }
+}
+
+/* Encabezado superior */
+.main-header {
+    background: #0d6efd;
+    color: #fff;
+    height: 56px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1040;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.main-header > div {
+    width: auto;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    justify-content: flex-start;
+}
+
+/* Botón hamburguesa blanco */
+.sidebar-toggle {
+    position: static;
+    margin-left: 0;
+    margin-right: 0.5rem;
+    top: auto;
+    left: auto;
+    background-color: transparent !important;
+    color: #fff !important;
+    border: none;
+    box-shadow: none;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.sidebar-toggle .navbar-toggler-icon {
+    filter: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255,255,255,1)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+    width: 32px;
+    height: 32px;
+}
+
+.drag-box {
+    width: 120px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-weight: bold;
+    font-size: 1.1rem;
+    border-radius: 12px;
+    margin-right: 16px;
+    margin-bottom: 0;
+    cursor: grab;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    user-select: none;
+}
+.drag-box:last-child {
+    margin-right: 0;
+}
+.drag-box.atenuacion {
+    background: #e74c3c;
+}
+.drag-box.ganancia {
+    background: #27ae60;
+}
+.drag-box-stack {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 0;
+}
+.timeline-dropzone {
+    position: relative;
+    min-height: 110px;
+    background: #f4f6fa;
+    border: 2px dashed #bbb;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    padding: 16px;
+    margin-bottom: 24px;
+    overflow-x: auto;
+    gap: 16px;
+    transition: background 0.2s;
+}
+.timeline-dropzone.active {
+    background: #e3f2fd;
+    border-color: #1E90FF;
+}
+.timeline-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-right: 12px;
+    min-width: 120px;
+}
+.timeline-item .input-group {
+    margin-top: 8px;
+}
+.timeline-label {
+    font-size: 0.95rem;
+    margin-top: 2px;
+    color: #555;
+}
+.remove-btn {
+    margin-top: 4px;
+    font-size: 0.8rem;
+    padding: 2px 8px;
+}
+.timeline-dbm-box {
+    font-size: 1.02rem;
+    padding: 0 4px;
+    min-height: 48px;
+    min-width: 110px;
+    max-width: 120px;
+    word-break: break-word;
+    white-space: normal;
+    line-height: 1.1;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+#timeline-container .btn-outline-danger {
+    position: absolute;
+    top: -36px;
+    right: 0;
+    z-index: 2;
+    padding: 4px 10px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+@media (max-width: 600px) {
+    #timeline-container .btn-outline-danger {
+        top: -28px;
+        right: 0;
+    }
+}
+.timeline-trash-btn {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    z-index: 10;
+    padding: 4px 10px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    border: 1px solid #dc3545;
+    color: #dc3545 !important;
+    transition: background 0.15s, color 0.15s;
+}
+.timeline-trash-btn:hover, .timeline-trash-btn:focus {
+    background: #dc3545;
+    color: #fff !important;
+    border-color: #dc3545;
+}
+
+/* Color rojo para la "x" del modal */
+.btn-close-red {
+    filter: none;
+}
+.btn-close-red {
+    --bs-btn-close-color: #dc3545;
+    color: #dc3545 !important;
+}
+.btn-close-red:focus {
+    box-shadow: 0 0 0 0.25rem rgba(220,53,69,.25);
+}
+/* Botón de información fijo en la esquina superior derecha */
+.info-btn-fixed {
+    position: fixed;
+    top: 72px; /* Ajusta según la altura del header */
+    right: 32px;
+    z-index: 1051;
+    background: transparent;
+    border: none;
+    outline: none;
+    box-shadow: none;
+    padding: 0;
+    margin: 0;
+}
+@media (max-width: 600px) {
+    .info-btn-fixed {
+        right: 10px;
+        top: 68px;
+    }
+}
+/* Justificar texto del modal de información */
+.info-modal-justify {
+    text-align: justify !important;
+}
+/* Margen superior para el modal de información */
+.info-modal-margin {
+    margin-top: 80px !important;
+}
+@media (max-width: 600px) {
+    .info-modal-margin {
+        margin-top: 40px !important;
+    }
+}
+
+/* Moderno para pantalla y pad */
+#pantalla {
+    background: #f8fafc;
+    border: none;
+    border-radius: 1rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    padding: 1.2rem 1.5rem;
+    font-size: 2.2rem;
+    color: #222;
+    margin-bottom: 1.2rem;
+    transition: box-shadow 0.2s;
+}
+#pantalla:focus {
+    outline: none;
+    box-shadow: 0 4px 16px rgba(23,162,184,0.10);
+}
+.modern-pad {
+    display: grid;
+    grid-template-columns: repeat(3, 52px);
+    gap: 10px;
+    justify-content: center;
+}
+.modern-btn {
+    background: #fff;
+    border: none;
+    border-radius: 0.7rem;
+    box-shadow: 0 2px 8px rgba(23,162,184,0.08);
+    font-size: 1.25rem;
+    color: #17a2b8;
+    font-weight: 500;
+    padding: 12px 0;
+    transition: background 0.15s, box-shadow 0.15s, color 0.15s;
+    cursor: pointer;
+    user-select: none;
+}
+.modern-btn:active,
+.modern-btn:focus {
+    background: #e9f7fa;
+    color: #138496;
+    box-shadow: 0 4px 16px rgba(23,162,184,0.13);
+}
+.modern-btn.borrar {
+    background: #fff0f0;
+    color: #dc3545;
+    font-size: 1.1rem;
+}
+.modern-btn.borrar:active,
+.modern-btn.borrar:focus {
+    background: #ffeaea;
+    color: #a71d2a;
+}
+@media (max-width: 600px) {
+    .modern-pad {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 7px;
+    }
+    .d-flex.justify-content-center.align-items-start.gap-3.mb-2 {
+        flex-direction: column;
+        align-items: stretch !important;
+        gap: 12px !important;
+    }
+}
+
+/* NUEVO/ACTUALIZADO: Grid para pad moderno de 5 columnas */
+.grid-pad {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+}
+
+/* NUEVO/ACTUALIZADO: Botón moderno con padding y estilos mejorados */
+.modern-btn {
+    padding: 20px;
+    font-size: 20px;
+    text-align: center;
+    border: none;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+    color: #0a7e8c;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: background 0.2s;
+}
+
+/* NUEVO/ACTUALIZADO: Hover para modern-btn */
+.modern-btn:hover {
+    background-color: #eaeaea;
+}
+
+/* NUEVO/ACTUALIZADO: Centrado vertical de SVG en botón borrar */
+.borrar svg {
+    vertical-align: middle;
+}
+
+/* NUEVO/ACTUALIZADO: Estilos para botones borrar y ac */
+.borrar, .ac {
+    background-color: #ffe5e5;
+    color: #dc3545;
+}
+
+.btn-0 {
+    grid-column: span 3;
+}
+
+.btn-dot {
+    grid-column: 4;
+}
+
+.btn-eq {
+    grid-column: 5;
+}
+
+.custom-tooltip {
+    display: none;
+    position: absolute;
+    background: #222;
+    color: #fff;
+    padding: 7px 14px;
+    border-radius: 6px;
+    font-size: 13px;
+    z-index: 9999;
+    pointer-events: none;
+    white-space: nowrap;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+    opacity: 0.95;
+    transition: opacity 0.15s;
+}
