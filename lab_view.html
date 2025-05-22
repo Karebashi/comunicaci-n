@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>LabVIEW - Ejemplos y Guía</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .labview-img {
+            max-width: 100%;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+        }
+    </style>
+</head>
+<body>
+    <!-- Encabezado superior fijo -->
+    <header class="main-header d-flex align-items-center px-3 shadow-sm">
+        <div class="d-flex align-items-center gap-3">
+            <button class="btn sidebar-toggle" id="sidebarToggle" aria-label="Abrir menú" type="button">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <span class="fw-bold fs-4 text-white">LabVIEW - Ejemplos y Guía</span>
+        </div>
+    </header>
+    <!-- Sidebar despegable -->
+    <nav id="sidebarMenu" class="sidebar-menu">
+        <div class="sidebar-header d-flex align-items-center px-3 py-2">
+            <span class="fw-bold fs-5">Módulos</span>
+            <button type="button" class="btn-close ms-auto" aria-label="Cerrar" id="sidebarClose"></button>
+        </div>
+        <ul class="list-unstyled sidebar-list">
+            <li><a class="sidebar-link" href="index.html">Inicio</a></li>
+            <li><a class="sidebar-link" href="aten_ganan.html">Atenuación y Ganancia</a></li>
+            <li><a class="sidebar-link" href="tiem_trans.html">Tiempo de Transmisión</a></li>
+            <li><a class="sidebar-link" href="calculadora.html">Calculadora de dBm/dB</a></li>
+            <li><a class="sidebar-link" href="enlace_radio.html">Enlace de Radio</a></li>
+            <li><a class="sidebar-link" href="amp_mod.html">Amplitud Modulada</a></li>
+            <li><a class="sidebar-link" href="frec_mod.html">Frecuencia Modulada</a></li>
+            <li><a class="sidebar-link" href="mod_ask.html">Modulación ASK</a></li>
+            <li><a class="sidebar-link" href="mod_fsk.html">Modulación FSK</a></li>
+            <li><a class="sidebar-link active" href="lab_view.html">LabVIEW</a></li>
+        </ul>
+    </nav>
+    <main class="container" style="margin-top:80px;max-width:900px;">
+        <div class="card shadow-sm border-0">
+            <div class="card-body">
+                <h2 class="mb-4 text-center">¿Cómo usar LabVIEW? Ejemplos Prácticos</h2>
+                <p class="lead text-justify">
+                    <b>LabVIEW</b> es una plataforma de desarrollo gráfico utilizada para la adquisición de datos, instrumentación y automatización de procesos. Su entorno de programación basado en diagramas de bloques permite crear aplicaciones de manera intuitiva y visual.
+                </p>
+                <hr>
+                <h4 class="mb-3">1. Interfaz de LabVIEW</h4>
+                <img src="Interfaz de LabVIEW.png" alt="Interfaz de LabVIEW" class="labview-img">
+                <ul>
+                    <li><b>Panel Frontal:</b> Donde se colocan los controles (entradas) e indicadores (salidas).</li>
+                    <li><b>Diagrama de Bloques:</b> Aquí se realiza la programación conectando funciones y estructuras.</li>
+                </ul>
+                <h4 class="mt-4 mb-3">2. Ejemplo Básico: Suma de dos números</h4>
+                <img src="Ejemplo suma LabVIEW.png" alt="Ejemplo suma LabVIEW" class="labview-img">
+                <ol>
+                    <li>En el <b>Panel Frontal</b>, agrega dos controles numéricos y un indicador numérico.</li>
+                    <li>En el <b>Diagrama de Bloques</b>, conecta los controles a una función de suma y el resultado al indicador.</li>
+                    <li>Ejecuta el VI e ingresa valores para ver el resultado de la suma.</li>
+                </ol>
+                <h4 class="mt-4 mb-3">3. Ejemplo Práctico: Generar y visualizar una señal senoidal</h4>
+                <img src="Generar señal senoidal LabVIEW.jpg" alt="Generar señal senoidal LabVIEW" class="labview-img">
+                <ol>
+                    <li>Agrega controles para la amplitud y frecuencia, y un gráfico de forma de onda en el panel frontal.</li>
+                    <li>En el diagrama de bloques, utiliza la función <b>Simulate Signal</b> para generar la señal.</li>
+                    <li>Conecta los controles a la función y la salida al gráfico.</li>
+                    <li>Ejecuta el VI y ajusta los parámetros para observar la señal en tiempo real.</li>
+                </ol>
+                <h4 class="mt-4 mb-3">4. Consejos para usar LabVIEW</h4>
+                <ul>
+                    <li>Utiliza estructuras como bucles <b>While</b> y <b>For</b> para automatizar tareas repetitivas.</li>
+                    <li>Organiza tu diagrama de bloques usando subVI para reutilizar código.</li>
+                    <li>Explora la ayuda integrada y los ejemplos que ofrece LabVIEW para aprender nuevas funciones.</li>
+                </ul>
+                <div class="alert alert-info mt-4">
+                    <b>Recuerda:</b> LabVIEW es ampliamente usado en la industria para pruebas, control y automatización. Practica creando VI sencillos y explora sus bibliotecas para desarrollar soluciones a problemas reales de ingeniería.
+                </div>
+                <h4 class="mt-4 mb-3">5. Ejemplo de aplicación: Control y monitoreo de tanques con LabVIEW</h4>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <img src="Panel Frontal LabVIEW.png" alt="Panel Frontal LabVIEW" class="labview-img">
+                        <div class="small text-secondary">
+                            <b>Panel Frontal:</b> Interfaz gráfica donde el usuario puede interactuar con el sistema. Aquí se observan:
+                            <ul>
+                                <li><b>Slide:</b> Permite ajustar un valor de entrada (por ejemplo, nivel de llenado o consigna).</li>
+                                <li><b>Indicadores tipo tanque (Tank1 y Tank2):</b> Muestran visualmente el nivel de los tanques en tiempo real.</li>
+                                <li><b>Puerto Serial:</b> Selección del puerto de comunicación para conectar con hardware externo (por ejemplo, Arduino o sensores).</li>
+                                <li><b>LUZ:</b> Indicador numérico que puede mostrar el estado de una variable digital (por ejemplo, encendido/apagado de una luz).</li>
+                            </ul>
+                            Este panel permite al usuario supervisar y controlar el proceso de manera intuitiva, facilitando la interacción hombre-máquina en aplicaciones de ingeniería.
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <img src="Diagrama de Bloques LabVIEW.png" alt="Diagrama de Bloques LabVIEW" class="labview-img">
+                        <div class="small text-secondary">
+                            <b>Diagrama de Bloques:</b> Es el "cerebro" lógico del sistema. Aquí se programan las operaciones que gestionan la adquisición de datos, el procesamiento y el control. En este ejemplo:
+                            <ul>
+                                <li>Se establece comunicación serial para recibir o enviar datos a hardware externo.</li>
+                                <li>Se procesan los valores recibidos y se actualizan los indicadores de los tanques.</li>
+                                <li>El valor del <b>Slide</b> se utiliza para modificar el comportamiento del sistema (por ejemplo, ajustar el nivel de referencia o enviar comandos).</li>
+                                <li>Se emplean estructuras de decisión y bucles para automatizar el control y la actualización de los indicadores.</li>
+                                <li>Se realiza escritura digital para controlar salidas (por ejemplo, encender una luz o activar una bomba).</li>
+                            </ul>
+                            Este enfoque modular y visual facilita la integración de sensores, actuadores y la lógica de control, permitiendo desarrollar soluciones robustas para la industria y la automatización.
+                        </div>
+                    </div>
+                </div>
+                <div class="alert alert-info mt-4">
+                    <b>Enfoque de ingeniería:</b> Este tipo de aplicaciones en LabVIEW es fundamental en la automatización industrial, donde se requiere monitoreo en tiempo real, control de procesos y comunicación con dispositivos externos. El uso de paneles frontales intuitivos y diagramas de bloques modulares permite a los ingenieros diseñar, probar y desplegar sistemas de control y supervisión de manera eficiente y escalable.
+                </div>
+            </div>
+        </div>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    // Menú lateral
+    const sidebar = document.getElementById('sidebarMenu');
+    const toggleBtn = document.getElementById('sidebarToggle');
+    const closeBtn = document.getElementById('sidebarClose');
+    toggleBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        sidebar.classList.toggle('sidebar-open');
+    });
+    closeBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        sidebar.classList.remove('sidebar-open');
+    });
+    document.addEventListener('mousedown', (e) => {
+        if (
+            sidebar.classList.contains('sidebar-open') &&
+            !sidebar.contains(e.target) &&
+            e.target !== toggleBtn
+        ) {
+            sidebar.classList.remove('sidebar-open');
+        }
+    });
+    </script>
+</body>
+</html>
